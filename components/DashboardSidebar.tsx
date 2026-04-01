@@ -1,0 +1,81 @@
+'use client'
+
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import { Database, LayoutDashboard, Link2, MessageSquare, Clock, CreditCard, Settings, LogOut, ChevronRight } from 'lucide-react'
+import type { User } from '@supabase/supabase-js'
+import clsx from 'clsx'
+
+const NAV = [
+  { href: '/dashboard', icon: LayoutDashboard, label: 'Overview' },
+  { href: '/dashboard/connections', icon: Link2, label: 'Connections' },
+  { href: '/dashboard/query', icon: MessageSquare, label: 'Ask a Question' },
+  { href: '/dashboard/history', icon: Clock, label: 'History' },
+  { href: '/dashboard/billing', icon: CreditCard, label: 'Billing' },
+  { href: '/dashboard/settings', icon: Settings, label: 'Settings' },
+]
+
+export default function DashboardSidebar({ user }: { user: User }) {
+  const pathname = usePathname()
+  const router = useRouter()
+  const supabase = createClient()
+
+  async function handleSignOut() {
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
+
+  const initials = (user.user_metadata?.full_name as string | undefined)
+    ?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() ?? user.email?.[0].toUpperCase() ?? 'U'
+
+  return (
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-slate-900/80 border-r border-slate-800 flex flex-col z-40">
+      <div className="px-5 py-5 border-b border-slate-800">
+        <Link href="/dashboard" className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-violet-500/20 border border-violet-500/30 flex items-center justify-center">
+            <Database className="w-4 h-4 text-violet-400" />
+          </div>
+          <span className="text-base font-bold text-white">Querli</span>
+        </Link>
+      </div>
+
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        {NAV.map(({ href, icon: Icon, label }) => {
+          const active = pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
+          return (
+            <Link key={href} href={href}
+              className={clsx(
+                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group',
+                active
+                  ? 'bg-violet-500/15 text-violet-300 border border-violet-500/20'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              )}>
+              <Icon className={clsx('w-4 h-4 shrink-0', active ? 'text-violet-400' : 'text-slate-500 group-hover:text-slate-300')} />
+              {label}
+              {active && <ChevronRight className="w-3 h-3 ml-auto text-violet-500/50" />}
+            </Link>
+          )
+        })}
+      </nav>
+
+      <div className="px-3 py-4 border-t border-slate-800">
+        <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-800/50">
+          <div className="w-8 h-8 rounded-full bg-violet-500/20 border border-violet-500/30 flex items-center justify-center text-violet-300 text-xs font-bold shrink-0">
+            {initials}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-white font-medium truncate">
+              {(user.user_metadata?.full_name as string) || 'User'}
+            </p>
+            <p className="text-xs text-slate-500 truncate">{user.email}</p>
+          </div>
+          <button onClick={handleSignOut} title="Sign out"
+            className="text-slate-500 hover:text-red-400 transition-colors shrink-0">
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </aside>
+  )
+}
