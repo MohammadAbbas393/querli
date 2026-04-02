@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useEffect, useState, useCallback } from 'react'
+import Link from 'next/link'
 import {
   motion,
   useInView,
@@ -10,6 +11,8 @@ import {
   useMotionValue,
   useSpring,
 } from 'framer-motion'
+
+const MotionLink = motion(Link)
 import {
   Database,
   Zap,
@@ -772,34 +775,34 @@ function Nav() {
         {/* Links */}
         <div className="hidden md:flex items-center gap-7">
           {['Features', 'How it works', 'Use cases', 'Pricing'].map((l) => (
-            <motion.a
+            <MotionLink
               key={l}
               href={`#${l.toLowerCase().replace(/\s+/g, '-')}`}
               className="text-slate-400 hover:text-white text-sm font-medium transition-colors"
               whileHover={{ y: -1 }}
             >
               {l}
-            </motion.a>
+            </MotionLink>
           ))}
         </div>
 
         <div className="flex items-center gap-3">
-          <motion.a
+          <MotionLink
             href="/login"
             className="hidden sm:flex px-4 py-2 text-slate-300 hover:text-white text-sm font-medium glass-bright rounded-xl border border-violet-500/10 transition-colors"
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
           >
             Sign in
-          </motion.a>
-          <motion.a
+          </MotionLink>
+          <MotionLink
             href="/signup"
             className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white text-sm font-bold rounded-xl transition-colors shadow-lg shadow-violet-500/25"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             Get started free
-          </motion.a>
+          </MotionLink>
         </div>
       </div>
     </motion.nav>
@@ -1036,7 +1039,7 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.75 }}
               className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-10"
             >
-              <motion.a
+              <MotionLink
                 href="/signup"
                 className="group relative px-6 py-3.5 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-xl transition-all text-sm flex items-center gap-2 justify-center shadow-xl shadow-violet-500/25 overflow-hidden"
                 whileHover={{ scale: 1.04 }}
@@ -1045,9 +1048,9 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <Sparkles className="w-4 h-4 relative z-10" />
                 <span className="relative z-10">Try demo — Free</span>
-              </motion.a>
+              </MotionLink>
 
-              <motion.a
+              <MotionLink
                 href="/signup"
                 className="px-6 py-3.5 glass-bright text-slate-300 hover:text-white font-medium rounded-xl transition-all text-sm flex items-center gap-2 justify-center"
                 whileHover={{ scale: 1.04 }}
@@ -1056,7 +1059,7 @@ export default function Home() {
                 <Database className="w-4 h-4" />
                 Connect your database
                 <ArrowRight className="w-3.5 h-3.5" />
-              </motion.a>
+              </MotionLink>
             </motion.div>
 
             {/* Mini trust */}
@@ -1678,13 +1681,13 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <motion.a
+              <MotionLink
                 href="/signup"
                 className="w-full py-3 glass-bright text-white font-semibold rounded-xl border border-violet-500/10 hover:border-violet-500/25 transition-colors text-sm text-center block"
                 whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
               >
                 Get started free
-              </motion.a>
+              </MotionLink>
             </motion.div>
 
             {/* Pro */}
@@ -1729,13 +1732,13 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <motion.a
+              <MotionLink
                 href="/signup"
                 className="w-full py-3 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-xl transition-colors text-sm shadow-lg shadow-violet-500/20 text-center block"
                 whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
               >
                 Start free trial
-              </motion.a>
+              </MotionLink>
             </motion.div>
 
             {/* Team */}
@@ -1772,13 +1775,13 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <motion.a
+              <MotionLink
                 href="/signup"
                 className="w-full py-3 glass-bright text-white font-semibold rounded-xl border border-cyan-500/20 hover:border-cyan-500/40 transition-colors text-sm text-center block"
                 whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
               >
                 Contact sales
-              </motion.a>
+              </MotionLink>
             </motion.div>
           </motion.div>
         </div>
@@ -1824,7 +1827,7 @@ export default function Home() {
               variants={fadeUp}
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
-              <motion.a
+              <MotionLink
                 href="/signup"
                 className="group relative px-8 py-4 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-2xl text-base flex items-center gap-2 justify-center shadow-2xl shadow-violet-500/30 overflow-hidden"
                 whileHover={{ scale: 1.05 }}
@@ -1834,9 +1837,9 @@ export default function Home() {
                 <Sparkles className="w-5 h-5 relative z-10" />
                 <span className="relative z-10">Try demo database — Free</span>
                 <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
-              </motion.a>
+              </MotionLink>
 
-              <motion.a
+              <MotionLink
                 href="/signup"
                 className="px-8 py-4 glass-bright text-slate-300 hover:text-white font-medium rounded-2xl text-base flex items-center gap-2 justify-center border border-violet-500/15"
                 whileHover={{ scale: 1.05 }}
@@ -1844,7 +1847,7 @@ export default function Home() {
               >
                 <Database className="w-5 h-5" />
                 Connect your own database
-              </motion.a>
+              </MotionLink>
             </motion.div>
 
             <motion.p variants={fadeIn} className="mt-6 text-slate-700 text-sm">
