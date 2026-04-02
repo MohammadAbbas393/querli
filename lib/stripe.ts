@@ -1,7 +1,20 @@
 import Stripe from 'stripe'
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-04-10',
+let _stripe: Stripe | null = null
+
+export function getStripe(): Stripe {
+  if (!_stripe) {
+    _stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? 'sk_placeholder', {
+      apiVersion: '2026-03-25.dahlia',
+    })
+  }
+  return _stripe
+}
+
+export const stripe = new Proxy({} as Stripe, {
+  get(_, prop) {
+    return (getStripe() as any)[prop]
+  },
 })
 
 export const PLANS = {
@@ -25,7 +38,7 @@ export const PLANS = {
     name: 'Business',
     price: 79,
     priceId: process.env.STRIPE_BUSINESS_PRICE_ID,
-    queriesLimit: -1, // unlimited
+    queriesLimit: -1,
     connectionsLimit: 20,
     features: ['Unlimited queries', '20 database connections', 'All chart types', 'Query history', 'CSV export', 'Priority support'],
   },

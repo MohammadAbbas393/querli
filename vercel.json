@@ -2,18 +2,5 @@
   "framework": "nextjs",
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
-  "installCommand": "npm install --legacy-peer-deps",
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": "@querli-supabase-url",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@querli-supabase-anon-key",
-    "SUPABASE_SERVICE_KEY": "@querli-supabase-service-key",
-    "STRIPE_SECRET_KEY": "@querli-stripe-secret",
-    "STRIPE_WEBHOOK_SECRET": "@querli-stripe-webhook-secret",
-    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "@querli-stripe-publishable",
-    "STRIPE_PRO_PRICE_ID": "@querli-stripe-pro-price",
-    "STRIPE_BUSINESS_PRICE_ID": "@querli-stripe-business-price",
-    "GROQ_API_KEY": "@querli-groq-key",
-    "ENCRYPTION_KEY": "@querli-encryption-key",
-    "BACKEND_URL": "@querli-backend-url"
-  }
+  "installCommand": "npm install --legacy-peer-deps"
 }
