@@ -784,20 +784,22 @@ function Nav() {
         </div>
 
         <div className="flex items-center gap-3">
-          <motion.button
+          <motion.a
+            href="/login"
             className="hidden sm:flex px-4 py-2 text-slate-300 hover:text-white text-sm font-medium glass-bright rounded-xl border border-violet-500/10 transition-colors"
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
           >
-            Try demo
-          </motion.button>
-          <motion.button
+            Sign in
+          </motion.a>
+          <motion.a
+            href="/signup"
             className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white text-sm font-bold rounded-xl transition-colors shadow-lg shadow-violet-500/25"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             Get started free
-          </motion.button>
+          </motion.a>
         </div>
       </div>
     </motion.nav>
@@ -1034,7 +1036,8 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.75 }}
               className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-10"
             >
-              <motion.button
+              <motion.a
+                href="/signup"
                 className="group relative px-6 py-3.5 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-xl transition-all text-sm flex items-center gap-2 justify-center shadow-xl shadow-violet-500/25 overflow-hidden"
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.96 }}
@@ -1042,9 +1045,10 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <Sparkles className="w-4 h-4 relative z-10" />
                 <span className="relative z-10">Try demo — Free</span>
-              </motion.button>
+              </motion.a>
 
-              <motion.button
+              <motion.a
+                href="/signup"
                 className="px-6 py-3.5 glass-bright text-slate-300 hover:text-white font-medium rounded-xl transition-all text-sm flex items-center gap-2 justify-center"
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.96 }}
@@ -1052,7 +1056,7 @@ export default function Home() {
                 <Database className="w-4 h-4" />
                 Connect your database
                 <ArrowRight className="w-3.5 h-3.5" />
-              </motion.button>
+              </motion.a>
             </motion.div>
 
             {/* Mini trust */}
@@ -1674,12 +1678,13 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <motion.button
-                className="w-full py-3 glass-bright text-white font-semibold rounded-xl border border-violet-500/10 hover:border-violet-500/25 transition-colors text-sm"
+              <motion.a
+                href="/signup"
+                className="w-full py-3 glass-bright text-white font-semibold rounded-xl border border-violet-500/10 hover:border-violet-500/25 transition-colors text-sm text-center block"
                 whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
               >
                 Get started free
-              </motion.button>
+              </motion.a>
             </motion.div>
 
             {/* Pro */}
@@ -1724,12 +1729,13 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <motion.button
-                className="w-full py-3 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-xl transition-colors text-sm shadow-lg shadow-violet-500/20"
+              <motion.a
+                href="/signup"
+                className="w-full py-3 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-xl transition-colors text-sm shadow-lg shadow-violet-500/20 text-center block"
                 whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
               >
                 Start free trial
-              </motion.button>
+              </motion.a>
             </motion.div>
 
             {/* Team */}
@@ -1766,12 +1772,13 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <motion.button
-                className="w-full py-3 glass-bright text-white font-semibold rounded-xl border border-cyan-500/20 hover:border-cyan-500/40 transition-colors text-sm"
+              <motion.a
+                href="/signup"
+                className="w-full py-3 glass-bright text-white font-semibold rounded-xl border border-cyan-500/20 hover:border-cyan-500/40 transition-colors text-sm text-center block"
                 whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
               >
                 Contact sales
-              </motion.button>
+              </motion.a>
             </motion.div>
           </motion.div>
         </div>
@@ -1817,7 +1824,8 @@ export default function Home() {
               variants={fadeUp}
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
-              <motion.button
+              <motion.a
+                href="/signup"
                 className="group relative px-8 py-4 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-2xl text-base flex items-center gap-2 justify-center shadow-2xl shadow-violet-500/30 overflow-hidden"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -1826,16 +1834,17 @@ export default function Home() {
                 <Sparkles className="w-5 h-5 relative z-10" />
                 <span className="relative z-10">Try demo database — Free</span>
                 <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
-              </motion.button>
+              </motion.a>
 
-              <motion.button
+              <motion.a
+                href="/signup"
                 className="px-8 py-4 glass-bright text-slate-300 hover:text-white font-medium rounded-2xl text-base flex items-center gap-2 justify-center border border-violet-500/15"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Database className="w-5 h-5" />
                 Connect your own database
-              </motion.button>
+              </motion.a>
             </motion.div>
 
             <motion.p variants={fadeIn} className="mt-6 text-slate-700 text-sm">
