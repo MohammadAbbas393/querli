@@ -24,7 +24,7 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-bold text-white">Overview</h1>
           <p className="text-slate-400 text-sm mt-1">Your database AI agent</p>
         </div>
-        <Link href="/dashboard/query"
+        <Link href="/query"
           className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors">
           <MessageSquare className="w-4 h-4" />Ask a question
         </Link>
@@ -68,7 +68,7 @@ export default async function DashboardPage() {
           </div>
           <h2 className="text-lg font-semibold text-white mb-2">Connect your first database</h2>
           <p className="text-slate-400 text-sm mb-6 max-w-sm mx-auto">Add a Postgres, MySQL, or SQLite connection and start asking questions in plain English.</p>
-          <Link href="/dashboard/connections"
+          <Link href="/connections"
             className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors">
             <Plus className="w-4 h-4" />Add database
           </Link>
@@ -82,7 +82,7 @@ export default async function DashboardPage() {
             <h2 className="font-semibold text-white flex items-center gap-2">
               <Clock className="w-4 h-4 text-slate-400" />Recent Queries
             </h2>
-            <Link href="/dashboard/history" className="text-violet-400 hover:text-violet-300 text-sm flex items-center gap-1">
+            <Link href="/history" className="text-violet-400 hover:text-violet-300 text-sm flex items-center gap-1">
               View all <ArrowRight className="w-3 h-3" />
             </Link>
           </div>

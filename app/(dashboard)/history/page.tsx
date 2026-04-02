@@ -21,7 +21,7 @@ export default async function HistoryPage() {
         <div className="border border-dashed border-slate-700 rounded-xl p-10 text-center">
           <Clock className="w-10 h-10 text-slate-600 mx-auto mb-3" />
           <p className="text-white font-medium mb-1">No queries yet</p>
-          <Link href="/dashboard/query"
+          <Link href="/query"
             className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors mt-3">
             <MessageSquare className="w-4 h-4" />Ask your first question
           </Link>
@@ -45,7 +45,7 @@ export default async function HistoryPage() {
                     <span className="text-xs text-slate-500">{(q as any).connections?.name ?? '—'}</span>
                     {q.execution_ms && <span className="text-xs text-slate-600">{q.execution_ms}ms</span>}
                     {rowCount > 0 && <span className="text-xs text-slate-600">{rowCount} rows</span>}
-                    <Link href={`/dashboard/query?question=${encodeURIComponent(q.question)}&connection=${q.connection_id}`}
+                    <Link href={`/query?question=${encodeURIComponent(q.question)}&connection=${q.connection_id}`}
                       className="text-xs text-violet-400 hover:text-violet-300 ml-auto">Re-run →</Link>
                   </div>
                 </div>

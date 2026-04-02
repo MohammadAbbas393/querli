@@ -52,7 +52,7 @@ export default function QueryInterface({ connections, defaultConnectionId, hasQu
       <div className="border border-dashed border-slate-700 rounded-xl p-10 text-center">
         <Database className="w-10 h-10 text-slate-600 mx-auto mb-3" />
         <p className="text-white font-medium mb-1">No databases connected</p>
-        <Link href="/dashboard/connections"
+        <Link href="/connections"
           className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors mt-3">
           Add a database
         </Link>
@@ -67,7 +67,7 @@ export default function QueryInterface({ connections, defaultConnectionId, hasQu
         <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 flex items-center gap-3 text-red-400 text-sm">
           <AlertCircle className="w-4 h-4 shrink-0" />
           You've used all {queriesLimit} queries this month.{' '}
-          <Link href="/dashboard/billing" className="underline font-medium">Upgrade for more →</Link>
+          <Link href="/billing" className="underline font-medium">Upgrade for more →</Link>
         </div>
       )}
       {hasQuota && queriesLimit !== -1 && (

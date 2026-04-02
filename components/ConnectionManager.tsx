@@ -63,7 +63,7 @@ export default function ConnectionManager({ connections, userId, plan, connectio
       {atLimit && (
         <div className="mb-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-4 py-3 text-yellow-400 text-sm">
           You've reached the {connectionsLimit}-connection limit.{' '}
-          <Link href="/dashboard/billing" className="underline">Upgrade for more.</Link>
+          <Link href="/billing" className="underline">Upgrade for more.</Link>
         </div>
       )}
 
