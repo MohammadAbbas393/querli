@@ -9,11 +9,11 @@ import clsx from 'clsx'
 
 const NAV = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Overview' },
-  { href: '/dashboard/connections', icon: Link2, label: 'Connections' },
-  { href: '/dashboard/query', icon: MessageSquare, label: 'Ask a Question' },
-  { href: '/dashboard/history', icon: Clock, label: 'History' },
-  { href: '/dashboard/billing', icon: CreditCard, label: 'Billing' },
-  { href: '/dashboard/settings', icon: Settings, label: 'Settings' },
+  { href: '/connections', icon: Link2, label: 'Connections' },
+  { href: '/query', icon: MessageSquare, label: 'Ask a Question' },
+  { href: '/history', icon: Clock, label: 'History' },
+  { href: '/billing', icon: CreditCard, label: 'Billing' },
+  { href: '/settings', icon: Settings, label: 'Settings' },
 ]
 
 export default function DashboardSidebar({ user }: { user: User }) {
