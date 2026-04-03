@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Database, Plus, Trash2, Loader2, Link2 } from 'lucide-react'
+import { Database, Plus, Trash2, Loader2, Link2, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 
 interface Connection {
@@ -18,10 +18,10 @@ const DB_PLACEHOLDERS: Record<string, string> = {
   sqlite: '/absolute/path/to/database.db',
 }
 
-export default function ConnectionManager({ connections, userId, plan, connectionsLimit }: {
+export default function ConnectionManager({ connections, connectionsLimit }: {
   connections: Connection[]
-  userId: string
-  plan: string
+  userId?: string
+  plan?: string
   connectionsLimit: number
 }) {
   const [list, setList] = useState(connections)
@@ -31,6 +31,7 @@ export default function ConnectionManager({ connections, userId, plan, connectio
   const [url, setUrl] = useState('')
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [refreshing, setRefreshing] = useState<string | null>(null)
   const [error, setError] = useState('')
 
   const atLimit = connectionsLimit !== -1 && list.length >= connectionsLimit
@@ -56,6 +57,12 @@ export default function ConnectionManager({ connections, userId, plan, connectio
     await fetch(`/api/connections/${id}`, { method: 'DELETE' })
     setList(l => l.filter(c => c.id !== id))
     setDeleting(null)
+  }
+
+  async function handleRefreshSchema(id: string) {
+    setRefreshing(id)
+    await fetch(`/api/connections/${id}`, { method: 'PATCH' })
+    setRefreshing(null)
   }
 
   return (
@@ -131,6 +138,11 @@ export default function ConnectionManager({ connections, userId, plan, connectio
                   className="text-xs text-violet-400 hover:text-violet-300 border border-violet-500/20 px-3 py-1.5 rounded-lg transition-colors">
                   Query
                 </Link>
+                <button onClick={() => handleRefreshSchema(conn.id)} disabled={refreshing === conn.id}
+                  title="Refresh schema cache"
+                  className="text-slate-500 hover:text-violet-400 transition-colors disabled:opacity-40">
+                  {refreshing === conn.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                </button>
                 <button onClick={() => handleDelete(conn.id)} disabled={deleting === conn.id}
                   className="text-slate-500 hover:text-red-400 transition-colors disabled:opacity-40">
                   {deleting === conn.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
