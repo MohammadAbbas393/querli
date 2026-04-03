@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Database, LayoutDashboard, Link2, MessageSquare, Clock, CreditCard, Settings, LogOut, ChevronRight } from 'lucide-react'
+import { Database, LayoutDashboard, Link2, MessageSquare, Clock, CreditCard, Settings, LogOut, ChevronRight, BarChart2 } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import clsx from 'clsx'
 
@@ -11,6 +11,7 @@ const NAV = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Overview' },
   { href: '/connections', icon: Link2, label: 'Connections' },
   { href: '/query', icon: MessageSquare, label: 'Ask a Question' },
+  { href: '/insights', icon: BarChart2, label: 'Insights' },
   { href: '/history', icon: Clock, label: 'History' },
   { href: '/billing', icon: CreditCard, label: 'Billing' },
   { href: '/settings', icon: Settings, label: 'Settings' },

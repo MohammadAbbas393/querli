@@ -47,13 +47,19 @@ async def run_query(req: QueryRequest):
     # Generate SQL
     sql = generate_sql(req.question, schema, db_type)
 
-    # Execute
+    # Execute — retry once if it fails, feeding the error back to the LLM
     try:
         columns, rows, execution_ms = execute_query(db_url, db_type, sql)
     except ValueError as e:
         raise HTTPException(400, str(e))
-    except Exception as e:
-        raise HTTPException(500, f"Query execution failed: {str(e)[:200]}")
+    except Exception as first_error:
+        try:
+            sql = generate_sql(req.question, schema, db_type, previous_sql=sql, error=str(first_error))
+            columns, rows, execution_ms = execute_query(db_url, db_type, sql)
+        except ValueError as e:
+            raise HTTPException(400, str(e))
+        except Exception:
+            raise HTTPException(400, "no_data")
 
     chart_type = guess_chart_type(columns, rows)
     summary = generate_summary(req.question, columns, rows, len(rows))

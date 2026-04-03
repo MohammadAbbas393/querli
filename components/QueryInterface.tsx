@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Send, Loader2, Database, Table, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 
 interface Connection { id: string; name: string; db_type: string }
 
@@ -15,25 +16,25 @@ interface QueryResult {
   summary?: string
 }
 
-export default function QueryInterface({ connections, defaultConnectionId, hasQuota, queriesUsed, queriesLimit, userId }: {
+export default function QueryInterface({ connections, defaultConnectionId, hasQuota, queriesUsed, queriesLimit }: {
   connections: Connection[]
   defaultConnectionId?: string
   hasQuota: boolean
   queriesUsed: number
   queriesLimit: number
-  userId: string
+  userId?: string
 }) {
   const [connId, setConnId] = useState(defaultConnectionId ?? connections[0]?.id ?? '')
   const [question, setQuestion] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<QueryResult | null>(null)
-  const [error, setError] = useState('')
+  const [noData, setNoData] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!connId || !question.trim()) return
     setLoading(true)
-    setError('')
+    setNoData(false)
     setResult(null)
 
     const res = await fetch('/api/query', {
@@ -42,9 +43,9 @@ export default function QueryInterface({ connections, defaultConnectionId, hasQu
       body: JSON.stringify({ connection_id: connId, question }),
     })
     const data = await res.json()
-    if (!res.ok) { setError(data.error ?? 'Query failed'); setLoading(false); return }
-    setResult(data)
     setLoading(false)
+    if (!res.ok) { setNoData(true); return }
+    setResult(data)
   }
 
   if (connections.length === 0) {
@@ -60,9 +61,21 @@ export default function QueryInterface({ connections, defaultConnectionId, hasQu
     )
   }
 
+  // Build chart-friendly data from rows + columns
+  const chartData = result?.rows.map(row => {
+    const obj: Record<string, any> = {}
+    result.columns.forEach((col, i) => { obj[col] = row[i] })
+    return obj
+  }) ?? []
+
+  const isNumeric = (v: any) => v !== null && v !== '' && !isNaN(Number(v))
+  const valueCol = result ? result.columns.find((_, i) => result.rows.length > 0 && isNumeric(result.rows[0][i]) && i > 0) : null
+  const labelCol = result?.columns[0]
+  const showChart = result && result.chart_type !== 'table' && valueCol && chartData.length > 0 && chartData.length <= 30
+  const isTimeSeries = labelCol && /date|month|week|year|time/i.test(labelCol)
+
   return (
     <div className="space-y-5">
-      {/* Quota */}
       {!hasQuota && (
         <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 flex items-center gap-3 text-red-400 text-sm">
           <AlertCircle className="w-4 h-4 shrink-0" />
@@ -74,7 +87,6 @@ export default function QueryInterface({ connections, defaultConnectionId, hasQu
         <p className="text-xs text-slate-500">{queriesUsed} / {queriesLimit} queries used this month</p>
       )}
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4">
         <div>
           <label className="block text-sm text-slate-400 mb-1.5">Database</label>
@@ -100,10 +112,10 @@ export default function QueryInterface({ connections, defaultConnectionId, hasQu
         </button>
       </form>
 
-      {error && (
+      {noData && (
         <div className="bg-slate-900/80 border border-slate-800 rounded-xl px-5 py-6 text-center">
           <p className="text-white font-medium">No data found</p>
-          <p className="text-slate-500 text-sm mt-1">We couldn't find any results for your question. Try rephrasing or check that the table exists.</p>
+          <p className="text-slate-500 text-sm mt-1">We couldn't find results for your question. Try rephrasing or check your database has data.</p>
         </div>
       )}
 
@@ -111,7 +123,7 @@ export default function QueryInterface({ connections, defaultConnectionId, hasQu
         <div className="bg-slate-900/80 border border-slate-800 rounded-xl overflow-hidden">
           {/* SQL */}
           <div className="border-b border-slate-800 px-5 py-4">
-            <p className="text-xs text-slate-500 mb-2 flex items-center gap-1.5">Generated SQL · {result.execution_ms}ms</p>
+            <p className="text-xs text-slate-500 mb-2">Generated SQL · {result.execution_ms}ms</p>
             <pre className="text-xs font-mono text-cyan-300 bg-slate-800/60 rounded-lg px-4 py-3 overflow-x-auto">{result.sql}</pre>
           </div>
 
@@ -122,8 +134,33 @@ export default function QueryInterface({ connections, defaultConnectionId, hasQu
             </div>
           )}
 
-          {/* Results table */}
-          {result.rows.length > 0 && (
+          {/* Chart */}
+          {showChart && (
+            <div className="px-5 py-5 border-b border-slate-800">
+              <ResponsiveContainer width="100%" height={260}>
+                {isTimeSeries ? (
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                    <XAxis dataKey={labelCol} tick={{ fill: '#64748b', fontSize: 11 }} />
+                    <YAxis tick={{ fill: '#64748b', fontSize: 11 }} />
+                    <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid #1e293b', color: '#fff', fontSize: 12 }} />
+                    <Line type="monotone" dataKey={valueCol!} stroke="#8b5cf6" strokeWidth={2} dot={false} />
+                  </LineChart>
+                ) : (
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                    <XAxis dataKey={labelCol} tick={{ fill: '#64748b', fontSize: 11 }} />
+                    <YAxis tick={{ fill: '#64748b', fontSize: 11 }} />
+                    <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid #1e293b', color: '#fff', fontSize: 12 }} />
+                    <Bar dataKey={valueCol!} fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                )}
+              </ResponsiveContainer>
+            </div>
+          )}
+
+          {/* Table */}
+          {result.rows.length > 0 ? (
             <div className="overflow-x-auto">
               <div className="px-5 py-3 flex items-center gap-2 text-xs text-slate-500">
                 <Table className="w-3.5 h-3.5" />{result.rows.length} rows
@@ -137,7 +174,7 @@ export default function QueryInterface({ connections, defaultConnectionId, hasQu
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800">
-                  {result.rows.slice(0, 50).map((row, i) => (
+                  {result.rows.slice(0, 100).map((row, i) => (
                     <tr key={i} className="hover:bg-slate-800/30 transition-colors">
                       {row.map((cell, j) => (
                         <td key={j} className="px-5 py-2.5 text-slate-300 text-xs">{String(cell ?? '')}</td>
@@ -146,13 +183,11 @@ export default function QueryInterface({ connections, defaultConnectionId, hasQu
                   ))}
                 </tbody>
               </table>
-              {result.rows.length > 50 && (
-                <p className="px-5 py-3 text-xs text-slate-500">Showing first 50 of {result.rows.length} rows</p>
+              {result.rows.length > 100 && (
+                <p className="px-5 py-3 text-xs text-slate-500">Showing first 100 of {result.rows.length} rows</p>
               )}
             </div>
-          )}
-
-          {result.rows.length === 0 && (
+          ) : (
             <div className="px-5 py-6 text-center text-slate-500 text-sm">No results returned</div>
           )}
         </div>
