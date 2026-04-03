@@ -73,6 +73,8 @@ export default function QueryInterface({ connections, defaultConnectionId, hasQu
   const labelCol = result?.columns[0]
   const showChart = result && result.chart_type !== 'table' && valueCol && chartData.length > 0 && chartData.length <= 30
   const isTimeSeries = labelCol && /date|month|week|year|time/i.test(labelCol)
+  // Single-row with multiple columns = overview/summary card view
+  const isOverview = result && result.rows.length === 1 && result.columns.length >= 3
 
   return (
     <div className="space-y-5">
@@ -159,8 +161,21 @@ export default function QueryInterface({ connections, defaultConnectionId, hasQu
             </div>
           )}
 
-          {/* Table */}
-          {result.rows.length > 0 ? (
+          {/* Overview card grid for single-row multi-column results */}
+          {isOverview ? (
+            <div className="p-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {result.columns.map((col, i) => (
+                <div key={col} className="bg-slate-800/60 rounded-lg px-4 py-3">
+                  <p className="text-xs text-slate-500 mb-1">{col.replace(/_/g, ' ')}</p>
+                  <p className="text-lg font-bold text-white">
+                    {isNumeric(result.rows[0][i])
+                      ? Number(result.rows[0][i]).toLocaleString()
+                      : String(result.rows[0][i] ?? '—')}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : result.rows.length > 0 ? (
             <div className="overflow-x-auto">
               <div className="px-5 py-3 flex items-center gap-2 text-xs text-slate-500">
                 <Table className="w-3.5 h-3.5" />{result.rows.length} rows

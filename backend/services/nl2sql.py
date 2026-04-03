@@ -26,11 +26,17 @@ def generate_sql(question: str, schema: str, db_type: str, previous_sql: str = "
     }.get(db_type, "SQL")
 
     system = (
-        f"You are an expert {dialect_hint} assistant. "
+        f"You are an expert {dialect_hint} analyst. "
         "Generate ONLY a single valid SELECT SQL query — no explanations, no markdown, no backticks. "
         "The query must be read-only (SELECT only). "
-        "IMPORTANT: Only use table and column names that exist in the schema below. "
-        "If the user mentions a concept, map it to the closest matching table or column in the schema."
+        "IMPORTANT: Only use table and column names that exist in the schema. "
+        "If the user mentions a concept, map it to the closest matching table or column. "
+        "For broad or overview questions like 'tell me about my company', 'give me a summary', 'overview', 'how is the business doing': "
+        "generate a single SELECT with subqueries that pulls key aggregates from ALL relevant tables — "
+        "for example: SELECT (SELECT COUNT(*) FROM customers) AS total_customers, "
+        "(SELECT COUNT(*) FROM orders) AS total_orders, "
+        "(SELECT COALESCE(SUM(total),0) FROM orders WHERE status='delivered') AS total_revenue, "
+        "(SELECT COUNT(*) FROM employees) AS total_employees — adapt to whatever tables exist in the schema."
     )
 
     if error and previous_sql:
@@ -51,7 +57,7 @@ def generate_sql(question: str, schema: str, db_type: str, previous_sql: str = "
             {"role": "system", "content": system},
             {"role": "user", "content": user_content},
         ],
-        max_tokens=400,
+        max_tokens=500,
         temperature=0.1,
     )
     return _parse_sql(completion.choices[0].message.content)
@@ -62,19 +68,32 @@ def generate_summary(question: str, columns: list[str], rows: list, row_count: i
         return "No results found."
     try:
         client = get_client()
-        preview = str(rows[:5])
+        # For single-row wide results (overview queries), send all data
+        is_overview = row_count == 1 and len(columns) >= 3
+        preview = str(rows[:10])
+
+        if is_overview:
+            prompt = (
+                f"The user asked: \"{question}\"\n"
+                f"The database returned this summary: columns={columns}, values={rows[0]}\n\n"
+                "Write a friendly, insightful 2-4 sentence business summary of what this data tells us. "
+                "Use natural language, mention specific numbers, and highlight what stands out. "
+                "Do not say 'the query returned' or mention SQL."
+            )
+            max_tokens = 250
+        else:
+            prompt = (
+                f"The user asked: \"{question}\"\n"
+                f"Results ({row_count} rows): columns={columns}, sample={preview}\n"
+                "Give a clear 1-2 sentence insight about what this data shows. Be specific with numbers."
+            )
+            max_tokens = 150
+
         completion = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
-            messages=[{
-                "role": "user",
-                "content": (
-                    f"Question: {question}\n"
-                    f"Results ({row_count} rows): columns={columns}, first rows={preview}\n"
-                    "Summarize the key insight in 1 sentence."
-                ),
-            }],
-            max_tokens=100,
-            temperature=0.3,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=max_tokens,
+            temperature=0.4,
         )
         return completion.choices[0].message.content.strip()
     except Exception:
