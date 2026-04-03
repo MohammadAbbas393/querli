@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Clock, MessageSquare } from 'lucide-react'
 import Link from 'next/link'
+import HistoryList from '@/components/HistoryList'
 
 export default async function HistoryPage() {
   const supabase = createClient()
@@ -27,32 +28,7 @@ export default async function HistoryPage() {
           </Link>
         </div>
       ) : (
-        <div className="bg-slate-900/80 border border-slate-800 rounded-xl overflow-hidden">
-          <div className="divide-y divide-slate-800">
-            {queries.map(q => {
-              const results = q.results as any ?? {}
-              const rowCount = results.rows?.length ?? 0
-              return (
-                <div key={q.id} className="px-5 py-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <p className="text-sm font-medium text-white">{q.question}</p>
-                    <span className="text-xs text-slate-500 shrink-0">{new Date(q.created_at).toLocaleDateString()}</span>
-                  </div>
-                  {q.sql && (
-                    <pre className="mt-2 text-xs font-mono text-cyan-300/70 bg-slate-800/40 rounded px-3 py-2 overflow-x-auto line-clamp-2">{q.sql}</pre>
-                  )}
-                  <div className="flex items-center gap-3 mt-2">
-                    <span className="text-xs text-slate-500">{(q as any).connections?.name ?? '—'}</span>
-                    {q.execution_ms && <span className="text-xs text-slate-600">{q.execution_ms}ms</span>}
-                    {rowCount > 0 && <span className="text-xs text-slate-600">{rowCount} rows</span>}
-                    <Link href={`/query?question=${encodeURIComponent(q.question)}&connection=${q.connection_id}`}
-                      className="text-xs text-violet-400 hover:text-violet-300 ml-auto">Re-run →</Link>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
+        <HistoryList queries={queries as any} />
       )}
     </div>
   )
