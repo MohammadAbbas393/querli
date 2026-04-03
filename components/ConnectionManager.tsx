@@ -127,7 +127,7 @@ export default function ConnectionManager({ connections, userId, plan, connectio
                   <p className="text-sm font-medium text-white">{conn.name}</p>
                   <p className="text-xs text-slate-500 mt-0.5 capitalize">{conn.db_type} · Added {new Date(conn.created_at).toLocaleDateString()}</p>
                 </div>
-                <Link href={`/dashboard/query?connection=${conn.id}`}
+                <Link href={`/query?connection=${conn.id}`}
                   className="text-xs text-violet-400 hover:text-violet-300 border border-violet-500/20 px-3 py-1.5 rounded-lg transition-colors">
                   Query
                 </Link>

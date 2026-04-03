@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Send, Loader2, Database, BarChart2, Table, AlertCircle } from 'lucide-react'
+import { Send, Loader2, Database, Table, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 
 interface Connection { id: string; name: string; db_type: string }
@@ -101,8 +101,9 @@ export default function QueryInterface({ connections, defaultConnectionId, hasQu
       </form>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0" />{error}
+        <div className="bg-slate-900/80 border border-slate-800 rounded-xl px-5 py-6 text-center">
+          <p className="text-white font-medium">No data found</p>
+          <p className="text-slate-500 text-sm mt-1">We couldn't find any results for your question. Try rephrasing or check that the table exists.</p>
         </div>
       )}
 
